@@ -1,7 +1,7 @@
 from datetime import datetime
 from flask_sqlalchemy import SQLAlchemy
-from models import db, User, Guest, Event,guest_event_association
-from app import app
+from .models import db, User, Guest, Event,guest_event_association
+from .app import app
 
 def create_seed_data():
     # Delete existing data (optional)
