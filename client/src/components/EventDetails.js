@@ -11,7 +11,7 @@ const EventDetails = () => {
   });
 
   useEffect(() => {
-    fetch(`/event/${id}`)
+    fetch(`https://eventplanner-cf0e.onrender.com/event/${id}`)
       .then(response => {
         if (!response.ok) {
           throw new Error('Failed to fetch event details');

@@ -23,7 +23,7 @@ const GuestForm = () => {
     };
 
     // Send POST request to create guest
-    fetch('/guests', {
+    fetch('https://eventplanner-cf0e.onrender.com/guests', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'

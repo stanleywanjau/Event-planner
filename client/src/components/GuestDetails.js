@@ -7,7 +7,7 @@ const GuestDetails = () => {
   
 
   useEffect(() => {
-    fetch(`/guest/${id}`)
+    fetch(`https://eventplanner-cf0e.onrender.com/guest/${id}`)
       .then(response => {
         if (!response.ok) {
           throw new Error('Failed to fetch guest details');
@@ -24,7 +24,7 @@ const GuestDetails = () => {
 
   const handleStatusUpdate = () => {
     if (window.confirm(`Are you sure you want to change the status to 'confirmed'?`)) {
-      fetch(`/guest/${id}`, {
+      fetch(`https://eventplanner-cf0e.onrender.com/guest/${id}`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json'

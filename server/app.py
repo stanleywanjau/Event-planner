@@ -2,8 +2,10 @@ from flask import  jsonify, request, make_response,session
 from flask_restful import  Resource
 from datetime import datetime
 
+
 from .models import User,Event,Guest
 from .config import db,api,app
+
 
 
 
