@@ -1,6 +1,7 @@
 from flask import  jsonify, request, make_response,session
 from flask_restful import  Resource
 from datetime import datetime
+from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 
 
 from .models import User,Event,Guest
@@ -11,61 +12,54 @@ from .config import db,api,app
 
 
 class ClearSession(Resource):
-
     def delete(self):
-    
-        session['page_views'] = None
-        session['user_id'] = None
-
+        # No need to clear session in JWT-based authentication
         return {}, 204
 
 class Signup(Resource):
-    
     def post(self):
+        username = request.json.get('username')
+        email = request.json.get('email')
+        password = request.json.get('password')
+        
+        if not (username and email and password):
+            return {'error': '422: Unprocessable Entity'}, 422
 
-        username = request.get_json()['username']
-        email = request.get_json()['email']
-        password = request.get_json()['password']
+        new_user = User(username=username, email=email)
+        new_user.password_hash = password  # Use the password_hash setter method
+        db.session.add(new_user)
+        db.session.commit()
 
-        if username and password:
-
-            new_user = User(username=username,email=email)
-            new_user.password_hash = password
-            db.session.add(new_user)
-            db.session.commit()
-
-            session['user_id'] = new_user.id
-
-            return new_user.to_dict(), 201
-        return {'error': '422: Unprocessable Entity'}, 422
+        # access_token = create_access_token(identity=new_user.id)
+        # return {'access_token': access_token}, 201
+        return new_user.to_dict(), 201
 
 class CheckSession(Resource):
+    @jwt_required()
     def get(self):
-        if session.get('user_id'):
-            user=User.query.filter(User.id == session['user_id']).first()
-
+        current_user_id = get_jwt_identity()
+        user = User.query.get(current_user_id)
+        if user:
             return user.to_dict(), 200
-        return {"failed"}, 404
-        
+        return {"error": "User not found"}, 404
+
 class Login(Resource):
     def post(self):
-        username = request.get_json()['username']
-        password = request.get_json()['password']
-
-        user = User.query.filter(User.username == username).first()
-
-        if user.authenticate(password):
-            session['user_id'] = user.id
-            return user.to_dict(), 200
-
+        username = request.json.get('username')
+        password = request.json.get('password')
+        
+        user = User.query.filter_by(username=username).first()
+        if user and user.authenticate(password):
+            access_token = create_access_token(identity=user.id)
+            return {'access_token': access_token}, 200
         return {'error': '401: Unauthorized'}, 401
 
 class Logout(Resource):
-        def delete(self):
-
-            session['user_id'] = None
+    @jwt_required()
+    def delete(self):
+        # Logout is handled by the client by simply discarding the token
+        return {'message': 'Logout successful'}, 200
             
-
 class Events(Resource):
     def get(self):
         event=[{'id':event.id,"title":event.title,"location":event.location} for event in Event.query.all()]
