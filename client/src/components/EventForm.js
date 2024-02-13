@@ -18,7 +18,7 @@ const EventForm = ({user}) => {
       user_id :user.id
     };
   
-    fetch('/events', {
+    fetch('https://eventplanner-cf0e.onrender.com/events', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

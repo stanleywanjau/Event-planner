@@ -24,7 +24,7 @@ const App = () => {
 
   useEffect(() => {
     // auto-login
-    fetch("/check_session").then((r) => {
+    fetch(`https://eventplanner-cf0e.onrender.com/check_session`).then((r) => {
       if (r.ok) {
         r.json().then((user) =>{ setUser(user); navigate(querystring()) });
       }
@@ -35,12 +35,12 @@ const App = () => {
   }
   // Fetch events and guests
   useEffect(() => {
-    fetch("/events")
+    fetch(`https://eventplanner-cf0e.onrender.com/events`)
       .then((r) => r.json())
       .then((data) => setEvents(data))
       .catch((error) => console.error("Error fetching events:", error));
 
-    fetch('/guests')
+    fetch(`https://eventplanner-cf0e.onrender.com/guests`)
       .then(response => {
         if (!response.ok) {
           throw new Error('Failed to fetch guests');
@@ -58,7 +58,7 @@ const App = () => {
   // Delete event
   function handleDeleteEvent(eventId) {
     if (window.confirm("Are you sure you want to delete this event?")) {
-      fetch(`/event/${eventId}`, {
+      fetch(`https://eventplanner-cf0e.onrender.com/event/${eventId}`, {
         method: "DELETE",
       }).then((r) => {
         if (r.ok) {
@@ -71,7 +71,7 @@ const App = () => {
   // Delete guest
   const handleDeleteGuest = (guestId) => {
     if (window.confirm('Are you sure you want to delete this guest?')) {
-      fetch(`/guest/${guestId}`, {
+      fetch(`https://eventplanner-cf0e.onrender.com/guest/${guestId}`, {
         method: 'DELETE',
       })
         .then(response => {

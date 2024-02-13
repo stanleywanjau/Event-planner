@@ -12,7 +12,7 @@ function SignUp({ setUser }) {
   function handleSubmit(e) {
     e.preventDefault();
     if (username && email && password && password === passwordConfirmation) {
-      fetch("/signup", {
+      fetch("https://eventplanner-cf0e.onrender.com/signup", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
