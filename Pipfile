@@ -16,6 +16,7 @@ flask-bcrypt = "*"
 gunicorn = "*"
 psycopg2-binary = "*"
 flask-cors = "*"
+flask-jwt-extended = "*"
 
 [dev-packages]
 

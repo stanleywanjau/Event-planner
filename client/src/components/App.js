@@ -24,9 +24,13 @@ const App = () => {
 
   useEffect(() => {
     // auto-login
-    fetch(`https://eventplanner-cf0e.onrender.com/check_session`).then((r) => {
+    fetch(`https://eventplanner-cf0e.onrender.com/check_session`)
+    .then((r) => {
       if (r.ok) {
-        r.json().then((user) =>{ setUser(user); navigate(querystring()) });
+        r.json().then((user) =>{ 
+          
+          setUser(user);
+          navigate(querystring()) });
       }
     });
   },[navigate] );
