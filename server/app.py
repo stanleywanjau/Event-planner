@@ -13,7 +13,7 @@ from .config import db,api,app
 
 class ClearSession(Resource):
     def delete(self):
-        # No need to clear session in JWT-based authentication
+        
         return {}, 204
 
 class Signup(Resource):
@@ -30,9 +30,9 @@ class Signup(Resource):
         db.session.add(new_user)
         db.session.commit()
 
-        # access_token = create_access_token(identity=new_user.id)
-        # return {'access_token': access_token}, 201
-        return new_user.to_dict(), 201
+        access_token = create_access_token(identity=new_user.id)
+        return {'access_token': access_token}, 201
+        # return new_user.to_dict(), 201
 
 class CheckSession(Resource):
     @jwt_required()
