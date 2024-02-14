@@ -42,6 +42,14 @@ const Navbar = ({ user, setUser }) => {
                 <Link to="/inviteguest">Invite Guest</Link>
               </div>
             </div>
+            <div className="dropdown">
+              <button className="dropbtn">Home</button>
+              <div className="dropdown-content">
+              <Link to='/home'>Home</Link>
+                
+              </div>
+            </div>
+            
           </>
         ) : (
           <>
