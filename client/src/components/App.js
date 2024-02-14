@@ -8,9 +8,7 @@ import GuestDetails from './GuestDetails';
 import Navbar from './Navbar';
 import GuestForm from './GuestForm';
 import EventGuest from './EventGuest';
-// import RegisterForm from '../ authentication/RegistrationForm';
 import RegisterForm from '../authentication/RegistrationForm';
-// import LoginForm from '../ authentication/LoginForm';
 import LoginForm from "../authentication/LoginForm";
 import Home from "./Home";
 
@@ -20,23 +18,42 @@ const App = () => {
   const [events, setEvents] = useState([]);
   const [guests, setGuests] = useState([]);
   const [user, setUser] = useState(null);
+  const [accessToken, setAccessToken] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
-    // auto-login
-    fetch(`https://eventplanner-cf0e.onrender.com/check_session`)
-    .then((r) => {
-      if (r.ok) {
-        r.json().then((user) =>{ 
-          
-          setUser(user);
-          navigate(querystring()) });
-      }
-    });
-  },[navigate] );
-  function querystring(){
-    return window.location.pathname
-  }
+    const checkSession = () => {
+      fetch(`https://eventplanner-cf0e.onrender.com/check_session`, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${accessToken}`
+        },
+        // credentials: 'include'
+      })
+      .then(response => {
+        if (response.ok) {
+          return response.json();
+        } else {
+          throw new Error('Failed to check session');
+        }
+      })
+      .then(userData => {
+        console.log(userData)
+        setUser(userData[0]);
+        navigate(window.location.pathname); 
+      })
+      .catch(error => {
+        console.error('Error checking session:', error);
+        
+      });
+    };
+
+    if (accessToken) {
+      checkSession();
+    }
+  }, [accessToken, navigate]);
+  
+  
   // Fetch events and guests
   useEffect(() => {
     fetch(`https://eventplanner-cf0e.onrender.com/events`)
@@ -92,15 +109,15 @@ const App = () => {
   };
 
   // Logout
-  
+  console.log(user)
 
   // If the user is not logged in, show login and registration forms
   if (!user) {
     return (
       <Routes>
         
-        <Route path="/" exact element={<RegisterForm setUser={setUser}/>}/>  
-        <Route path="/login" exact element={<LoginForm setUser={setUser}/>}/>
+        <Route path="/" exact element={<RegisterForm setAccessToken={setAccessToken}/>}/>  
+        <Route path="/login" exact element={<LoginForm setAccessToken={setAccessToken}/>}/>
       </Routes>
     )}
   
@@ -108,7 +125,7 @@ const App = () => {
   // If the user is logged in, show the content
   return (
     <>
-      <Navbar setUser={setUser} user={user}/>
+    <Navbar setUser={setUser} user={user}/>
       <Routes>
         <Route path="/home" element={<Home/>}/>
         <Route path="/events" exact element={<EventList events={events} handleDeleteEvent={handleDeleteEvent}/>}/>

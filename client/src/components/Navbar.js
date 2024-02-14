@@ -5,12 +5,19 @@ import { Link, useNavigate } from 'react-router-dom';
 const Navbar = ({ user, setUser }) => {
   const navigate=useNavigate()
   function handleLogoutClick() {
-    fetch("/logout", { method: "DELETE" }).then((r) => {
-      if (r.ok) {
-        setUser(null);
-        navigate(window.location.pathname='/login')
-      }
-    });
+    fetch("https://eventplanner-cf0e.onrender.com/logout", { method: "post" })
+      .then((response) => {
+        if (response.ok) {
+          setUser(null);
+          navigate('/login');
+        } else {
+          throw new Error('Logout failed');
+        }
+      })
+      .catch((error) => {
+        console.error('Error logging out:', error);
+        
+      });
   }
 
   return (
@@ -35,12 +42,20 @@ const Navbar = ({ user, setUser }) => {
                 <Link to="/inviteguest">Invite Guest</Link>
               </div>
             </div>
+            <div className="dropdown">
+              <button className="dropbtn">Home</button>
+              <div className="dropdown-content">
+              <Link to='/home'>Home</Link>
+                
+              </div>
+            </div>
+            
           </>
         ) : (
           <>
             <Link to="/login">login</Link>
           </>
-        )}
+        )} 
       </div>
     </header>
   );

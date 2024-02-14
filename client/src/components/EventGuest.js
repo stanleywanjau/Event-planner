@@ -23,7 +23,7 @@ const EventGuest = ({ events, guests }) => {
 
   const associateGuestWithEvent = () => {
     if (selectedEvent && selectedGuest) {
-      fetch(`/event/${selectedEvent.id}/guest/${selectedGuest.id}`, {
+      fetch(`https://eventplanner-cf0e.onrender.com/event/${selectedEvent.id}/guest/${selectedGuest.id}`, {
         method: 'POST'
       })
         .then(response => {

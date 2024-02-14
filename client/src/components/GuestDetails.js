@@ -24,7 +24,7 @@ const GuestDetails = () => {
 
   const handleStatusUpdate = () => {
     if (window.confirm(`Are you sure you want to change the status to 'confirmed'?`)) {
-      fetch(`https://eventplanner-cf0e.onrender.com/guest/${id}`, {
+      fetch(`/guest/${id}`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json'

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link ,useNavigate} from "react-router-dom";
 
-function SignUp({ setUser }) {
+function SignUp({ setAccessToken }) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [passwordConfirmation, setPasswordConfirmation] = useState("");
@@ -25,8 +25,9 @@ function SignUp({ setUser }) {
         }),
       }).then((r) => {
         if (r.ok) {
-          r.json().then((user) => {setUser(user)
-          navigate(window.location.pathname='/home')
+          r.json().then((user) => {setAccessToken(user.access_token)
+          navigate('/home')
+          // navigate(window.location.pathname); 
           });
         }
       });
