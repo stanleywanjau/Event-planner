@@ -26,21 +26,21 @@ class Signup(Resource):
             return {'error': '422: Unprocessable Entity'}, 422
 
         new_user = User(username=username, email=email)
-        new_user.password_hash = password  # Use the password_hash setter method
+        new_user.password_hash = password  
         db.session.add(new_user)
         db.session.commit()
 
         access_token = create_access_token(identity=new_user.id)
         return {'access_token': access_token}, 201
-        # return new_user.to_dict(), 201
+        
 
 class CheckSession(Resource):
     @jwt_required()
     def get(self):
         current_user_id = get_jwt_identity()
-        user = User.query.get(current_user_id)
+        user = [User.query.get(current_user_id).to_dict()]
         if user:
-            return user.to_dict(), 200
+            return user, 200
         return {"error": "User not found"}, 404
 
 class Login(Resource):
@@ -57,7 +57,7 @@ class Login(Resource):
 class Logout(Resource):
     @jwt_required()
     def delete(self):
-        # Logout is handled by the client by simply discarding the token
+        
         return {'message': 'Logout successful'}, 200
             
 class Events(Resource):
