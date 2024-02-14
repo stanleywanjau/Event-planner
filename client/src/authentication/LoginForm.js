@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from 'react-router-dom'
 
-function Login({ setUser }) {
+function Login({  setAccessToken }) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const navigate =useNavigate()
@@ -16,8 +16,9 @@ function Login({ setUser }) {
       body: JSON.stringify({ username, password }),
     }).then((r) => {
       if (r.ok) {
-        r.json().then((user) => {setUser(user) 
-          navigate(window.location.pathname = '/home')
+        r.json().then((user) => {
+          setAccessToken(user.access_token)
+          navigate('/home')
         } );
       }
     });

@@ -40,7 +40,7 @@ const EventDetails = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    fetch(`/event/${id}`, {
+    fetch(`https://eventplanner-cf0e.onrender.com/event/${id}`, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json'
