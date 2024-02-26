@@ -4,8 +4,8 @@ from datetime import datetime
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 
 
-from .models import User,Event,Guest
-from .config import db,api,app
+from models import User,Event,Guest
+from config import db,api,app
 
 
 
@@ -24,6 +24,14 @@ class Signup(Resource):
         
         if not (username and email and password):
             return {'error': '422: Unprocessable Entity'}, 422
+
+        # Check if the username or email already exists
+        existing_user = User.query.filter((User.username == username) | (User.email == email)).first()
+        if existing_user:
+            if existing_user.username == username:
+                return {'error': '409: Conflict', 'message': 'Username already exists'}, 409
+            elif existing_user.email == email:
+                return {'error': '409: Conflict', 'message': 'Email already in use'}, 409
 
         new_user = User(username=username, email=email)
         new_user.password_hash = password  
@@ -49,10 +57,14 @@ class Login(Resource):
         password = request.json.get('password')
         
         user = User.query.filter_by(username=username).first()
-        if user and user.authenticate(password):
-            access_token = create_access_token(identity=user.id)
-            return {'access_token': access_token}, 200
-        return {'error': '401: Unauthorized'}, 401
+        if not user:
+            return {'error': '404: Not Found', 'message': 'User not found'}, 404
+
+        if not user.authenticate(password):
+            return {'error': '401: Unauthorized', 'message': 'Invalid password'}, 401
+
+        access_token = create_access_token(identity=user.id)
+        return {'access_token': access_token}, 200
 
 class Logout(Resource):
     @jwt_required()

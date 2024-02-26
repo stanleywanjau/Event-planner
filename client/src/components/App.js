@@ -18,7 +18,7 @@ const App = () => {
   const [events, setEvents] = useState([]);
   const [guests, setGuests] = useState([]);
   const [user, setUser] = useState(null);
-  const [accessToken, setAccessToken] = useState(null);
+  // const [accessToken, setAccessToken] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -26,7 +26,7 @@ const App = () => {
       fetch(`https://eventplanner-cf0e.onrender.com/check_session`, {
         method: 'GET',
         headers: {
-          'Authorization': `Bearer ${accessToken}`
+          'Authorization': `Bearer ${localStorage.getItem('jwt')}`
         },
         // credentials: 'include'
       })
@@ -38,7 +38,6 @@ const App = () => {
         }
       })
       .then(userData => {
-        console.log(userData)
         setUser(userData[0]);
         navigate(window.location.pathname); 
       })
@@ -48,10 +47,10 @@ const App = () => {
       });
     };
 
-    if (accessToken) {
+    // if (accessToken) {
       checkSession();
-    }
-  }, [accessToken, navigate]);
+    // }
+  }, [navigate]);
   
   
   // Fetch events and guests
@@ -109,15 +108,15 @@ const App = () => {
   };
 
   // Logout
-  console.log(user)
+  // console.log(user)
 
   // If the user is not logged in, show login and registration forms
-  if (!user) {
+  if (!localStorage.getItem('jwt')) {
     return (
       <Routes>
         
-        <Route path="/" exact element={<RegisterForm setAccessToken={setAccessToken}/>}/>  
-        <Route path="/login" exact element={<LoginForm setAccessToken={setAccessToken}/>}/>
+        <Route path="/" exact element={<RegisterForm />}/>  
+        <Route path="/login" exact element={<LoginForm />}/>
       </Routes>
     )}
   

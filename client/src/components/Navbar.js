@@ -4,20 +4,24 @@ import { Link, useNavigate } from 'react-router-dom';
 
 const Navbar = ({ user, setUser }) => {
   const navigate=useNavigate()
-  function handleLogoutClick() {
-    fetch("https://eventplanner-cf0e.onrender.com/logout", { method: "post" })
-      .then((response) => {
-        if (response.ok) {
-          setUser(null);
-          navigate('/login');
-        } else {
-          throw new Error('Logout failed');
-        }
-      })
-      .catch((error) => {
-        console.error('Error logging out:', error);
+  // function handleLogoutClick() {
+  //   fetch("https://eventplanner-cf0e.onrender.com/logout", { method: "post" })
+  //     .then((response) => {
+  //       if (response.ok) {
+  //         setUser(null);
+  //         navigate('/login');
+  //       } else {
+  //         throw new Error('Logout failed');
+  //       }
+  //     })
+  //     .catch((error) => {
+  //       console.error('Error logging out:', error);
         
-      });
+  //     });
+  // }
+  function handleLogoutClick() {
+    localStorage.removeItem('jwt');
+    navigate('/login');
   }
 
   return (

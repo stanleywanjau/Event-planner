@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from 'react-router-dom'
 
-function Login({  setAccessToken }) {
+function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const navigate =useNavigate()
@@ -17,7 +17,9 @@ function Login({  setAccessToken }) {
     }).then((r) => {
       if (r.ok) {
         r.json().then((user) => {
-          setAccessToken(user.access_token)
+          // setAccessToken(user.access_token)
+          localStorage.setItem('jwt',user.access_token);
+          // console.log(localStorage.getItem('jwt'))
           navigate('/home')
         } );
       }
