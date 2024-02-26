@@ -1,11 +1,12 @@
 import React, { useState } from "react";
 import { Link ,useNavigate} from "react-router-dom";
 
-function SignUp() {
+function SignUp({ setAccessToken }) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [passwordConfirmation, setPasswordConfirmation] = useState("");
   const [email, setEmail] = useState("");
+  const [error, setError] = useState(null);
   const [errors, setErrors] = useState({});
   const navigate =useNavigate()
 
@@ -26,10 +27,12 @@ function SignUp() {
       }).then((r) => {
         if (r.ok) {
           r.json().then((user) => {
-            // setAccessToken(user.access_token)
-            localStorage.setItem('jwt',user.access_token);
-          navigate('/home')
-          // navigate(window.location.pathname); 
+            localStorage.setItem('jwt', user.access_token);
+            navigate('/home');
+          });
+        } else {
+          r.json().then((error) => {
+            setError(error.message); // Assuming backend returns error message in JSON format
           });
         }
       });
@@ -50,10 +53,10 @@ function SignUp() {
       setErrors(newErrors);
     }
   }
-
   return (
     <div className='form-get-in'>
       <h2>Register</h2>
+      {error && <p style={{ color: 'red' }}>{error}</p>}
       <form onSubmit={handleSubmit}>
         <div>
           <label htmlFor='username'>Username</label>

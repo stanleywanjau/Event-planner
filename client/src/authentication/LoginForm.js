@@ -4,6 +4,7 @@ import { Link, useNavigate } from 'react-router-dom'
 function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState(null);
   const navigate =useNavigate()
 
   function handleSubmit(e) {
@@ -17,12 +18,16 @@ function Login() {
     }).then((r) => {
       if (r.ok) {
         r.json().then((user) => {
-          // setAccessToken(user.access_token)
-          localStorage.setItem('jwt',user.access_token);
-          // console.log(localStorage.getItem('jwt'))
-          navigate('/home')
-        } );
+          localStorage.setItem('jwt', user.access_token);
+          navigate('/home');
+        });
+      } else {
+        r.json().then((error) => {
+          setError(error.message); // Assuming backend returns error message in JSON format
+        });
       }
+    }).catch(error => {
+      setError("An error occurred. Please check your internet connection.");
     });
   }
 
@@ -30,6 +35,7 @@ function Login() {
     <div>
       <form onSubmit={handleSubmit} className="form-get-in">
         <h1>Login</h1>
+        {error && <p style={{ color: 'red' }}>{error}</p>}
         <label htmlFor="username">Username</label>
         <input
           type="text"
